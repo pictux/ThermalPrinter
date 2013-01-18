@@ -1,17 +1,23 @@
 /**
-  Sets the printmode (0x1B 0x21 n == COMMAND PRINT_MODE mode)
-  BARCODE:
-    COMMAND_BARCODE COMMAND_BARCODE_PRINT BARCODE_MODE_UPCA barcode 0x00
+  Code by Mirco Piccin aka pitusso
 
-  MISURE BARCODE (altezza / 256)
+  Used Thermal Printer is a Citizen CBM-231
+  Lot of resources here: http://microprinter.pbworks.com/w/page/20867146/FrontPage
+
+  Printer Command Usage
+  - Sets the printmode (0x1B 0x21 n == COMMAND PRINT_MODE mode)
+    BARCODE:
+      COMMAND_BARCODE COMMAND_BARCODE_PRINT BARCODE_MODE_UPCA barcode 0x00
+
+    MISURE BARCODE (altezza / 256)
      COMMAND_BARCODE COMMAND_BARCODE_HEIGHT height
      COMMAND_BARCODE COMMAND_BARCODE_WIDTH WIDTH
 
-  BOLD
-    COMMAND DOUBLEPRINT 0x01 (ON) 0x00 (OFF)
+    BOLD
+      COMMAND DOUBLEPRINT ON <TEXT> OFF
 
-  UNDERLINE
-    COMMAND UNDERLINE 0x01 (ON) 0x00 (OFF)
+    UNDERLINE
+      COMMAND UNDERLINE ON <TEXT> OFF
 
 */
 
@@ -21,6 +27,7 @@ const byte LINEFEED_RATE = 0x33;
 const byte FULLCUT = 0x69; //[0x1B;0x69];
 const byte PARTIALCUT = 0x6D; //[0x1B;0x6D];
 const byte PRINT_MODE = 0x21;
+const byte HIGHLIGH = 0x45;
 const byte DOUBLEPRINT = 0x47;
 const byte UNDERLINE = 0x2D;
 const byte RESET = 0x40;
@@ -56,6 +63,7 @@ const byte BARCODE_MODE_CODE128 = 0x07;
 
 
 #include <SoftwareSerial.h>
+#include "bysa.h"
 
 #define rxPin 2
 #define txPin 3
@@ -76,6 +84,15 @@ void setup() {
   
   printer.println("");
     
+  //HIGHLIGH  
+  printer.write(COMMAND);
+  printer.write(HIGHLIGH);
+  printer.write(ON);
+  printer.println("TEST");
+  printer.write(COMMAND);
+  printer.write(HIGHLIGH);
+  printer.write(OFF);
+    
   //BOLD  
   printer.write(COMMAND);
   printer.write(DOUBLEPRINT);
@@ -89,7 +106,7 @@ void setup() {
   printer.write(COMMAND);
   printer.write(UNDERLINE);
   printer.write(ON);
-  printer.println("http://www.lipsum.com/");
+  printer.println("http://www.treviso-aug.it/");
   printer.write(COMMAND);
   printer.write(UNDERLINE);
   printer.write(OFF);
@@ -108,12 +125,17 @@ void setup() {
   printer.println("");
   printer.println("");
   
+  /**
   //IMAGE
   printer.write(COMMAND);
   printer.write(COMMAND_IMAGE);
+  printer.write(ON);
+  printer.write(1);
+  printBitmap(bysa_width, bysa_height, bysa_data, 1);
+  printer.write(OFF);
   printer.println("");
   printer.println("");
-
+  */
 
   printer.println("");  
   printer.println("");
@@ -121,5 +143,4 @@ void setup() {
 }
 
 void loop() {
-//  stateCheck();
 }

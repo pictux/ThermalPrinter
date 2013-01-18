@@ -5,13 +5,13 @@
  
   Required hardware includes a WiFi Shield or an Ethernet Shield connected to the Arduino UNO board 
 
-  User Thermal Printer is a Citizen CBM-231
+  Used Thermal Printer is a Citizen CBM-231
   Lot of resources here: http://microprinter.pbworks.com/w/page/20867146/FrontPage
  */
 
 //if using a W5100 based Ethernet shield, comment out the following line; 
 //leave untouched if using Arduino Wifi Shield
-//#define WIFI
+#define WIFI
 
 #include <SPI.h>
 #include <SoftwareSerial.h>
@@ -74,8 +74,8 @@ SoftwareSerial printer =  SoftwareSerial(rxPin, txPin);
 //network configuration, WIRED or WIFI
 #ifdef WIFI
   // Enter your WiFi network settings
-  char ssid[] = "cm19"; //  your network SSID (name) 
-  char pass[] = "39235518603288277389";    // your network password (use for WPA, or use as key for WEP)
+  char ssid[] = "your_ssid"; //  your network SSID (name) 
+  char pass[] = "your_password";    // your network password (use for WPA, or use as key for WEP)
 
   int keyIndex = 0;            // your network key Index number (needed only for WEP)
   int status = WL_IDLE_STATUS; // status of the wifi connection
@@ -87,10 +87,10 @@ SoftwareSerial printer =  SoftwareSerial(rxPin, txPin);
 
   // fill in an available IP address on your network here,
   // for auto configuration:
-  IPAddress ip(10, 0, 99, 1);
-  IPAddress subnet(255, 255, 0, 0);
+  IPAddress ip(192, 168, 0, 10);
+  IPAddress subnet(255, 255, 255, 0);
   IPAddress dnss(8, 8, 8, 8);
-  IPAddress gw(10, 0, 3, 79);
+  IPAddress gw(192, 168, 0, 1);
 
   EthernetClient client;
 #endif
@@ -104,12 +104,14 @@ responseTimeout = 15L * 1000L; // Max time to wait for data from server
 
 byte resultsDepth; // Used in JSON parsing
 
-char *serverName = "search.twitter.com",
+//IPAddress serverName(199, 59, 148, 84);
+char *serverName = "search.twitter.com";
+
 // queryString can be any valid Twitter API search string, including
 // boolean operators. See https://dev.twitter.com/docs/using-search
 // for options and syntax. Funny characters do NOT need to be URL
 // encoded here -- the sketch takes care of that.
-queryString[20] = "#hotprinter", 
+char queryString[20] = "#hotprinter", 
 lastId[21], // 18446744073709551615\0 (64-bit maxint as string)
 timeStamp[32], // WWW, DD MMM YYYY HH:MM:SS +XXXX\0
 fromUser[16], // Max username length (15) + \0
@@ -138,6 +140,8 @@ void setup() {
   printer.begin(9600);
 
   //cut the paper
+  printer.println("");
+  printer.println(""); 
   printer.write(COMMAND);
   printer.write(FULLCUT);
 

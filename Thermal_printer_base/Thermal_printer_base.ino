@@ -1,3 +1,10 @@
+/**
+  Code by Mirco Piccin aka pitusso
+
+  Based test for Thermal Printer is a Citizen CBM-231
+  Lot of resources here: http://microprinter.pbworks.com/w/page/20867146/FrontPage
+*/
+
 #include <SoftwareSerial.h>
 
 #define rxPin 2
